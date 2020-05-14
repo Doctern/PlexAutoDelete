@@ -1,12 +1,6 @@
 $ErrorActionPreference = 'SilentlyContinue'
-$keep = #Number of files to keep in the folder.
-$path1 = Get-ChildItem -Path "" -Recurse -Include *.mp4 #Folder path
-$path2 = Get-ChildItem -Path "" -Recurse -Include *.mp4 #Folder path
-$path3 = Get-ChildItem -Path "" -Recurse -Include *.mp4 #Folder path
-$files = $path1, $path2, $path3
-for($i = 0; $i -lt $files.Length; $i++){
-$files[$i] | 
-Sort-Object CreationTime -Descending |
-Select-Object -Last ($files[$i].Count - $keep) |
-ForEach-Object { Remove-Item $_ -WhatIf}
-}#Remove -WhatIf after testing the script.
+$keep = #Number of files that you want to keep in the folder
+$paths = Get-Content -Path @("list.txt")#Add the folder paths to this text file.
+for($i = 0; $i -lt $paths.Length; $i++){
+Get-ChildItem -Path $paths[$i] -Recurse -Include *.mp4 | Sort-Object CreationTime -Descending | Select-Object -Last ((Get-ChildItem -Path $paths[$i] -Recurse -Include *.mp4).Count - $keep) | ForEach-Object { Remove-Item $_ -WhatIf}
+}
